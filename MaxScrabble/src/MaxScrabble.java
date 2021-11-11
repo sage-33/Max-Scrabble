@@ -1,40 +1,45 @@
 import java.io.IOException;
 
 public class MaxScrabble extends TextFileAccessor {
-	private final String[] ALPHABET = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
-			"q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
 	private final int[] SCRABBLE_SCORES = { 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4,
 			10 };
 	private final int ASCII_CODE_a = 97;
-	private int highestScore;
-	private int lineNum;
+	private double highestScore;
+	private String winningString;
 
 	public MaxScrabble(String filename) throws IOException {
 		openFile(filename);
+		highestScore = 0;
 
 	}
 
 	@Override
 	protected void processLine(String curLine) {
-		String[] curLineArr = curLine.split(" ");
-		int curWordScore = 0;
-		for (int i = 0; i < curLineArr.length; i++) {
-			char[] curWordArr = curLineArr[i].toLowerCase().toCharArray();
-			for (int a = 0; a < curWordArr.length; a++) {
-				if (Character.isLetter(curWordArr[a]) && getLetterPos(curWordArr[a]) < 26) {
-					curWordScore = curWordScore + (SCRABBLE_SCORES[getLetterPos(curWordArr[a])]);
-					// winning string
+		curLine = curLine.toLowerCase();
+		double curLineScore = 0;
+		for (int i = 0; i < curLine.length(); i++) {
+			char ch = curLine.charAt(i);
+			if (Character.isLetter(ch) && getLetterPos(ch) < 26) {
+				int letterScore = (SCRABBLE_SCORES[getLetterPos(ch)]);
+
+				if (i % 4 == 0) {
+//					letterScore *= 2; Same thing as below but different format
+					letterScore = letterScore * 2;
+
+				} else if (i % 9 == 0) {
+
+					letterScore = letterScore * 3;
+
 				}
 
+				curLineScore = curLineScore + letterScore;
 			}
-			// calculate density
-			if (highestScore < curWordScore) {
-				highestScore = curWordScore;
-			}
-			lineNum++;
 
 		}
-
+		if (highestScore < curLineScore) {
+			highestScore = curLineScore;
+			winningString = curLine;
+		}
 	}
 
 	private int getLetterPos(char ch) {
@@ -43,7 +48,7 @@ public class MaxScrabble extends TextFileAccessor {
 
 	@Override
 	public void printReport() {
-		System.out.println("winner: " + winningstring + " score: " + highestScore + " Line Number: " + lineNum);
+		System.out.println("winner: \"" + winningString + "\" score: " + highestScore);
 
 	}
 
