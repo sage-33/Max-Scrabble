@@ -1,5 +1,12 @@
 import java.util.Scanner;
 
+/**
+ * If given a text file, run Max Scrabble and find the line with the sum of the
+ * highest score based on the Scrabble letter scores.
+ * 
+ * @author sagesilberman
+ *
+ */
 public class MaxScrabbleDriver {
 
 	public static void main(String args[]) {
